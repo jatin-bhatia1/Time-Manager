@@ -1,0 +1,38 @@
+version: '3.6'
+services:
+  webinterfaces:
+    container_name: webInterfaces
+    build: 
+        context: ./webInterfaces/
+        dockerfile: Dockerfile
+    ports: 
+        - 8080:8080
+    restart: always
+    
+
+  db:
+    restart: always
+    image: 'postgres:11'
+    container_name: 'postgres-db'
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: postgres 
+      POSTGRES_DB: timemanager_api_dev 
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data'
+    ports:
+      - 5432:5432
+   
+  api:
+    container_name: api
+    build:
+      context: ./api_node
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - 4000:4000
+   
+volumes: 
+    pgdata:
